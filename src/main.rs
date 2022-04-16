@@ -12,14 +12,25 @@ async fn health_check(req: HttpRequest) -> impl Responder {
     HttpResponse::Ok()
 }*/
 use rust_zero2prod::run;
+use std::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    let listener = TcpListener::bind("127.0.0.1:8000").expect("Failed to bind to port");
+    run(listener)?.await
+    //  Spawn a new tcp port and use that to instantiate `run()`
+    // let listener = TcpListener::bind("127.0.0.1:8000").expect("Failed to bind random port");
+
+    // We retrieve the port here again, but this time its for `main`
+    // let port = listener.local_addr().unwrap().port();
+
     //  Bubble up the io::Error if we failed to bind the address
     //  otherwise call .await on our HttpServer
-    let _ = run("127.0.0.1:0").await?;
+    // let server = run(listener)?;
 
-    Ok(())
+    // let _ = tokio::spawn(server);
+
+    // Ok(())
 
     /* HttpServer::new(|| {
         App::new()
